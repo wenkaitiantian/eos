@@ -1,84 +1,88 @@
+/**
+ *  @file
+ *  @copyright defined in eos/LICENSE.txt
+ */
+
 #pragma once
 
+#include <eosiolib/eosio.hpp>
 #include <eosiolib/singleton.hpp>
-#include <eosiolib/multi_index.hpp>
+#include <vector>
+
+using namespace eosio;
 
 namespace identity {
 
-   typedef uint64_t identity_name;
-   typedef uint64_t property_name;
-   typedef uint64_t property_type_name;
+    typedef uint64_t identity_name;
+    typedef uint64_t property_name;
+    typedef uint64_t property_type_name;
 
-   struct certvalue {
-      property_name     property; ///< name of property, base32 encoded i64
-      std::string       type; ///< defines type serialized in data
-      std::vector<char> data; ///<
-      std::string       memo; ///< meta data documenting basis of certification
-      uint8_t           confidence = 1; ///< used to define liability for lies,
-      /// 0 to delete
+    TABLE certvalue {
+        property_name     property; ///< name of property, base32 encoded i64
+        std::string       type; ///< defines type serialized in data
+        std::vector<char> data; ///<
+        std::string       memo; ///< meta data documenting basis of certification
+        uint8_t           confidence = 1; ///< used to define liability for lies,
+        /// 0 to delete
 
-      EOSLIB_SERIALIZE( certvalue, (property)(type)(data)(memo)(confidence) )
-   };
+        property_name primary_key() { return property; }
 
-   struct certrow {
-      uint64_t            id;
-      property_name       property;
-      uint64_t            trusted;
-      account_name        certifier;
-      uint8_t             confidence = 0;
-      std::string         type;
-      std::vector<char>   data;
-      uint64_t primary_key() const { return id; }
-      /* constexpr */ static eosio::key256 key(uint64_t property, uint64_t trusted, uint64_t certifier) {
-         /*
-           key256 key;
-           key.uint64s[0] = property;
-           key.uint64s[1] = trusted;
-           key.uint64s[2] = certifier;
-           key.uint64s[3] = 0;
-         */
-         return eosio::key256::make_from_word_sequence<uint64_t>(property, trusted, certifier);
-      }
-      eosio::key256 get_key() const { return key(property, trusted, certifier); }
+        EOSLIB_SERIALIZE( certvalue, (property)(type)(data)(memo)(confidence) )
+    };
 
-      EOSLIB_SERIALIZE( certrow , (property)(trusted)(certifier)(confidence)(type)(data)(id) )
-   };
+    TABLE certrow {
+        uint64_t            id;
+        property_name       property;
+        uint64_t            trusted;
+        name                certifier;
+        uint8_t             confidence = 0;
+        std::string         type;
+        std::vector<char>   data;
+        uint64_t primary_key() const { return id; }
+        /* constexpr */ static eosio::key256 key(uint64_t property, uint64_t trusted, uint64_t certifier) {
+            /*
+              key256 key;
+              key.uint64s[0] = property;
+              key.uint64s[1] = trusted;
+              key.uint64s[2] = certifier;
+              key.uint64s[3] = 0;
+            */
+            return eosio::key256::make_from_word_sequence<uint64_t>(property, trusted, certifier);
+        }
+        eosio::key256 get_key() const { return key(property, trusted, certifier.value); }
 
-   struct identrow {
-      uint64_t     identity;
-      account_name creator;
+        EOSLIB_SERIALIZE( certrow , (property)(trusted)(certifier)(confidence)(type)(data)(id) )
+    };
 
-      uint64_t primary_key() const { return identity; }
+    TABLE identrow {
+        uint64_t identity;
+        name     creator;
 
-      EOSLIB_SERIALIZE( identrow , (identity)(creator) )
-   };
+        uint64_t primary_key() const { return identity; }
 
-   struct trustrow {
-      account_name account;
+        EOSLIB_SERIALIZE( identrow , (identity)(creator) )
+    };
 
-      uint64_t primary_key() const { return account; }
+    TABLE trustrow {
+        name account;
 
-      EOSLIB_SERIALIZE( trustrow, (account) )
-   };
+        uint64_t primary_key() const { return account.value; }
 
-   typedef eosio::multi_index<N(certs), certrow,
-                              eosio::indexed_by< N(bytuple), eosio::const_mem_fun<certrow, eosio::key256, &certrow::get_key> >
-                              > certs_table;
-   typedef eosio::multi_index<N(ident), identrow> idents_table;
-   typedef eosio::singleton<N(account), identity_name>  accounts_table;
-   typedef eosio::multi_index<N(trust), trustrow> trust_table;
+        EOSLIB_SERIALIZE( trustrow, (account) )
+    };
 
-   class identity_base {
-      public:
-         identity_base( account_name acnt) : _self( acnt ) {}
+    typedef eosio::multi_index<"certs"_n, certrow, eosio::indexed_by< "bytuple"_n, eosio::const_mem_fun<certrow, eosio::key256, &certrow::get_key >>> certs_table;
+    typedef eosio::multi_index<"ident"_n, identrow> idents_table;
+    typedef eosio::singleton<"account"_n, identity_name>  accounts_table;
+    typedef eosio::multi_index<"trust"_n, trustrow> trust_table;
 
-         bool is_trusted_by( account_name trusted, account_name by );
+    class identity_base : public contract {
+    public:
+        using contract::contract;
 
-         bool is_trusted( account_name acnt );
-
-      protected:
-         account_name _self;
-   };
-
+        bool is_trusted_by( name trusted, name by );
+        bool is_trusted( name acnt );
+    };
 }
 
+//EOSIO_DISPATCH( identity::identity_base, (is_trusted_by)(is_trusted) )
