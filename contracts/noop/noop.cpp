@@ -8,19 +8,19 @@
 
 namespace eosio {
 
-    CONTRACT noop: public contract {
-    public:
-        using contract::contract;
+   CONTRACT noop: public contract {
+   public:
+      using contract::contract;
 
-        // Ignore type in action
-        ACTION anyaction( name from,
-                          const eosio::ignore<std::string>& /*type*/,
-                          const eosio::ignore<std::string>& /*data*/ )
-        {
-            require_auth( from );
-        }
-    };
+      // Ignore type in action
+      ACTION anyaction( name from,
+                        const eosio::ignore<std::string>& /*type*/,
+                        const eosio::ignore<std::string>& /*data*/ )
+      {
+         require_auth( from );
+      }
+   };
 
-    EOSIO_DISPATCH( noop, ( anyaction ) )
+   EOSIO_DISPATCH( noop, ( anyaction ) )
     
 } /// namespace eosio     
