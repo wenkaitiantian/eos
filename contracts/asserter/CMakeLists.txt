@@ -1,8 +1,12 @@
-file(GLOB ABI_FILES "*.abi")
-configure_file("${ABI_FILES}" "${CMAKE_CURRENT_BINARY_DIR}" COPYONLY)
+cmake_minimum_required( VERSION 3.5 )
+project( asserter_example VERSION 1.0.0 )
 
-add_wast_executable(TARGET asserter
-  INCLUDE_FOLDERS "${STANDARD_INCLUDE_FOLDERS}"
-  LIBRARIES libc libc++ eosiolib
-  DESTINATION_FOLDER ${CMAKE_CURRENT_BINARY_DIR}
-)
+set( CMAKE_CXX_STANDARD 17 )
+
+find_package( eosio.cdt )
+
+include_directories( ${MYPROJECT_DIR}../ )
+
+add_contract_no_abi( asserter asserter asserter.cpp )
+
+configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/asserter.abi ${CMAKE_CURRENT_BINARY_DIR}/asserter.abi COPYONLY )

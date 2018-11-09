@@ -221,7 +221,7 @@ add_subdirectory( contracts )
 add_subdirectory( plugins )
 add_subdirectory( programs )
 add_subdirectory( scripts )
-add_subdirectory( unittests )
+# add_subdirectory( unittests )
 add_subdirectory( tests )
 add_subdirectory( tools )
 add_subdirectory( debian )
@@ -271,3 +271,4 @@ install(FILES libraries/fc/src/network/LICENSE.go DESTINATION ${CMAKE_INSTALL_FU
 
 include(package)
 include(doxygen)
+include(contracts_external_project.txt)

@@ -1,9 +1,8 @@
+cmake_minimum_required( VERSION 3.5 )
+project( simple.token_example VERSION 1.0.0 )
 
-file(GLOB ABI_FILES "*.abi")
-configure_file("${ABI_FILES}" "${CMAKE_CURRENT_BINARY_DIR}" COPYONLY)
+set( CMAKE_CXX_STANDARD 17 )
 
-add_wast_executable(TARGET simple.token
-  INCLUDE_FOLDERS "${STANDARD_INCLUDE_FOLDERS}"
-  LIBRARIES libc++ libc eosiolib
-  DESTINATION_FOLDER ${CMAKE_CURRENT_BINARY_DIR}
-)
+find_package( eosio.cdt )
+
+add_contract( simple.token simple.token simple.token.cpp )

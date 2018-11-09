@@ -1,8 +1,8 @@
-file(GLOB ABI_FILES "*.abi")
-configure_file("${ABI_FILES}" "${CMAKE_CURRENT_BINARY_DIR}" COPYONLY)
-add_wast_executable(TARGET snapshot_test
-  INCLUDE_FOLDERS "${STANDARD_INCLUDE_FOLDERS}"
-  LIBRARIES libc++ libc eosiolib
-  DESTINATION_FOLDER ${CMAKE_CURRENT_BINARY_DIR}
-)
+cmake_minimum_required( VERSION 3.5 )
+project( snapshot_test_example VERSION 1.0.0 )
 
+set( CMAKE_CXX_STANDARD 17 )
+
+find_package( eosio.cdt )
+
+add_contract( snapshot_test snapshot_test snapshot_test.cpp )

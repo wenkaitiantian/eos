@@ -1,8 +1,10 @@
-file(GLOB ABI_FILES "*.abi")
-configure_file("${ABI_FILES}" "${CMAKE_CURRENT_BINARY_DIR}" COPYONLY)
+cmake_minimum_required( VERSION 3.5 )
+project( proxy_example VERSION 1.0.0 )
 
-add_wast_executable(TARGET proxy
-  INCLUDE_FOLDERS "${STANDARD_INCLUDE_FOLDERS}" ${Boost_INCLUDE_DIR} 
-  LIBRARIES libc++ libc eosiolib
-  DESTINATION_FOLDER ${CMAKE_CURRENT_BINARY_DIR}
-)
+set( CMAKE_CXX_STANDARD 17 )
+
+find_package( eosio.cdt )
+
+include_directories( ${MYPROJECT_DIR}../ )
+
+add_contract( proxy proxy proxy.cpp )
