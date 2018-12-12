@@ -30,6 +30,21 @@
 # https://github.com/EOSIO/eos/blob/master/LICENSE
 ##########################################################################
 
+	CMAKE_VERSION_MAJOR=3
+	CMAKE_VERSION_MINOR=10
+	CMAKE_VERSION_PATCH=2
+	CMAKE_VERSION=${CMAKE_VERSION_MAJOR}.${CMAKE_VERSION_MINOR}.${CMAKE_VERSION_PATCH}
+	MONGODB_VERSION=3.6.3
+	MONGO_C_DRIVER_VERSION=1.9.3
+	MONGO_CXX_DRIVER_VERSION=3.2
+	SRC_LOCATION=/usr/local/src
+	BOOST_VERSION_MAJOR=1
+	BOOST_VERSION_MINOR=66
+	BOOST_VERSION_PATCH=0
+	BOOST_VERSION=${BOOST_VERSION_MAJOR}_${BOOST_VERSION_MINOR}_${BOOST_VERSION_PATCH}
+	LLVM_CLANG_VERSION=release_40
+	TINI_VERSION=0.18.0
+
    SOURCE_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
    function usage()
@@ -158,67 +173,50 @@
       fi
 
       OS_NAME=$( cat /etc/os-release | grep ^NAME | cut -d'=' -f2 | sed 's/\"//gI' )
-
+      MONGODB_CONF=/opt/mongodb/mongod.conf
+      export LLVM_DIR=$SRC_LOCATION/llvm-$LLVM_CLANG_VERSION/lib/cmake/llvm
+      export PATH=/opt/mongodb/bin:$PATH
       case "$OS_NAME" in
          "Amazon Linux AMI"|"Amazon Linux")
             FILE="${SOURCE_DIR}/scripts/eosio_build_amazon.sh"
             CXX_COMPILER=g++
             C_COMPILER=gcc
-            MONGOD_CONF=${HOME}/opt/mongodb/mongod.conf
-            export LLVM_DIR=${HOME}/opt/wasm/lib/cmake/llvm
-            export CMAKE=${HOME}/opt/cmake/bin/cmake
-            export PATH=${HOME}/opt/mongodb/bin:$PATH
          ;;
          "CentOS Linux")
             FILE="${SOURCE_DIR}/scripts/eosio_build_centos.sh"
             CXX_COMPILER=g++
             C_COMPILER=gcc
-            MONGOD_CONF=${HOME}/opt/mongodb/mongod.conf
-            export LLVM_DIR=${HOME}/opt/wasm/lib/cmake/llvm
-            export CMAKE=${HOME}/opt/cmake/bin/cmake
-            export PATH=${HOME}/opt/mongodb/bin:$PATH
          ;;
          "elementary OS")
             FILE="${SOURCE_DIR}/scripts/eosio_build_ubuntu.sh"
             CXX_COMPILER=clang++-4.0
             C_COMPILER=clang-4.0
-            MONGOD_CONF=${HOME}/opt/mongodb/mongod.conf
-            export PATH=${HOME}/opt/mongodb/bin:$PATH
          ;;
          "Fedora")
             FILE="${SOURCE_DIR}/scripts/eosio_build_fedora.sh"
             CXX_COMPILER=g++
             C_COMPILER=gcc
-            MONGOD_CONF=/etc/mongod.conf
-            export LLVM_DIR=${HOME}/opt/wasm/lib/cmake/llvm
          ;;
          "Linux Mint")
             FILE="${SOURCE_DIR}/scripts/eosio_build_ubuntu.sh"
             CXX_COMPILER=clang++-4.0
             C_COMPILER=clang-4.0
-            MONGOD_CONF=${HOME}/opt/mongodb/mongod.conf
-            export PATH=${HOME}/opt/mongodb/bin:$PATH
          ;;
          "Ubuntu")
             FILE="${SOURCE_DIR}/scripts/eosio_build_ubuntu.sh"
             CXX_COMPILER=clang++-4.0
             C_COMPILER=clang-4.0
-            MONGOD_CONF=${HOME}/opt/mongodb/mongod.conf
-            export PATH=${HOME}/opt/mongodb/bin:$PATH
          ;;
          "Debian GNU/Linux")
-            FILE=${SOURCE_DIR}/scripts/eosio_build_ubuntu.sh
+            FILE="${SOURCE_DIR}/scripts/eosio_build_ubuntu.sh"
             CXX_COMPILER=clang++-4.0
             C_COMPILER=clang-4.0
-            MONGOD_CONF=${HOME}/opt/mongodb/mongod.conf
-            export PATH=${HOME}/opt/mongodb/bin:$PATH
          ;;
          *)
             printf "\\n\\tUnsupported Linux Distribution. Exiting now.\\n\\n"
             exit 1
       esac
-
-      export BOOST_ROOT="${HOME}/opt/boost"
+      export BOOST_ROOT="${SRC_LOCATION}/boost_${BOOST_VERSION}"
       OPENSSL_ROOT_DIR=/usr/include/openssl
    fi
 
@@ -226,7 +224,7 @@
       FILE="${SOURCE_DIR}/scripts/eosio_build_darwin.sh"
       CXX_COMPILER=clang++
       C_COMPILER=clang
-      MONGOD_CONF=/usr/local/etc/mongod.conf
+      MONGODB_CONF=/usr/local/etc/mongod.conf
       OPENSSL_ROOT_DIR=/usr/local/opt/openssl
    fi
 
