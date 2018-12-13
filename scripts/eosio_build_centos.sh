@@ -202,7 +202,9 @@
 		&& ./bootstrap.sh "--prefix=${SRC_LOCATION}/boost_${BOOST_VERSION}" \
 		&& ./b2 -q -j$( nproc ) install \
 		&& cd .. \
-		&& rm -f boost_${BOOST_VERSION}.tar.bz2
+		&& rm -f boost_${BOOST_VERSION}.tar.bz2 \
+		&& rm -f ~/opt/boost \
+		&& ln -s ~/opt/boost /usr/local/src/boost_${BOOST_VERSION}
 		printf "\\tBoost library successfully installed @ %s.\\n\\n"
 	else
 		printf "\\tBoost library found with correct version.\\n"
