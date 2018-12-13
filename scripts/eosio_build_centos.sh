@@ -216,8 +216,7 @@
     if [ ! -e "${MONGODB_CONF}" ]; then
 		printf "\\tInstalling Boost library...\\n"
 		curl -OL https://fastdl.mongodb.org/linux/mongodb-linux-x86_64-amazon-${MONGODB_VERSION}.tgz \
-		&& tar xf mongodb-linux-x86_64-amazon-${MONGODB_VERSION}.tgz \  
-		&& mkdir -p /opt/mongodb \
+		&& tar -xzvf mongodb-linux-x86_64-amazon-${MONGODB_VERSION}.tgz \
 		&& mv ${SRC_LOCATION}/mongodb-linux-x86_64-amazon-${MONGODB_VERSION} /opt/mongodb \
 		&& mkdir /opt/mongodb/data \
 		&& mkdir /opt/mongodb/log \

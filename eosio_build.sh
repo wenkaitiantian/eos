@@ -152,7 +152,7 @@
    printf "\\n\\tBeginning build version: %s\\n" "${VERSION}"
    printf "\\t%s\\n" "$( date -u )"
    printf "\\tUser: %s\\n" "$( whoami )"
-   printf "\\tgit head id: %s\\n" "$( cat .git/refs/heads/master )"
+   # printf "\\tgit head id: %s\\n" "$( cat .git/refs/heads/master )"
    printf "\\tCurrent branch: %s\\n" "$( git rev-parse --abbrev-ref HEAD )"
    printf "\\n\\tARCHITECTURE: %s\\n" "${ARCH}"
 
