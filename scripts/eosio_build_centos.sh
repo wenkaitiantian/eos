@@ -193,7 +193,7 @@
 	fi
 
 
-	printf "\\n\\tChecking Boost library installation...\\n"
+	printf "\\n\\tChecking Boost library (${BOOST_VERSION}) installation...\\n"
     if [[ ! -d ${SRC_LOCATION}/boost_${BOOST_VERSION} ]]; then
 		printf "\\tInstalling Boost library...\\n"
 		curl -LO https://dl.bintray.com/boostorg/release/${BOOST_VERSION_MAJOR}.${BOOST_VERSION_MINOR}.${BOOST_VERSION_PATCH}/source/boost_${BOOST_VERSION}.tar.bz2 \
