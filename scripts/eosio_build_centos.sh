@@ -216,7 +216,7 @@
 
 	printf "\\n\\tChecking MongoDB installation...\\n"
     if [ ! -e "${MONGODB_CONF}" ]; then
-		printf "\\tInstalling Boost library...\\n"
+		printf "\\tInstalling MongoDB...\\n"
 		curl -OL https://fastdl.mongodb.org/linux/mongodb-linux-x86_64-amazon-${MONGODB_VERSION}.tgz \
 		&& tar -xzvf mongodb-linux-x86_64-amazon-${MONGODB_VERSION}.tgz \
 		&& mv ${SRC_LOCATION}/mongodb-linux-x86_64-amazon-${MONGODB_VERSION} /opt/mongodb \
@@ -225,10 +225,11 @@
 		&& touch /opt/mongodb/log/mongod.log \
 		&& rm -f mongodb-linux-x86_64-amazon-${MONGODB_VERSION}.tgz \
 		&& mv ${SOURCE_DIR}/scripts/mongod.conf /opt/mongodb/mongod.conf \
-		&& mkdir -p /data/db
-		printf "\\tMongoDB successfully installed @ %s.\\n\\n"
+		&& mkdir -p /data/db \
+		&& && export PATH=/opt/mongodb/bin:$PATH
+		printf "\\t - MongoDB successfully installed @ /opt/mongodb.\\n"
 	else
-		printf "\\MongoDB found with correct version.\\n"
+		printf "\\t - MongoDB found with correct version."
 	fi
 
 	
@@ -243,9 +244,9 @@
 		&& make install \
 		&& cd .. \
 		&& rm mongo-c-driver-${MONGO_C_DRIVER_VERSION}.tar.gz
-		printf "\\tMongoDB C driver successfully installed @ %s.\\n\\n"
+		printf "\\t - MongoDB C driver successfully installed @ %s.\\n"
 	else
-		printf "\\MongoDB C driver found with correct version.\\n"
+		printf "\\t - MongoDB C driver found with correct version.\\n"
 	fi
 	printf "\\tChecking MongoDB C++ driver installation...\\n"
 	if [ ! -e "${SRC_LOCATION}/mongo-cxx-driver-${MONGO_CXX_DRIVER_VERSION}" ]; then
@@ -256,9 +257,9 @@
 		&& make -j$(nproc) VERBOSE=1 \
 		&& make install \
 		&& cd ../..
-		printf "\\tMongoDB C++ driver successfully installed @ %s.\\n\\n"
+		printf "\\t - MongoDB C++ driver successfully installed @ %s.\\n"
 	else
-		printf "\\MongoDB C++ driver found with correct version.\\n"
+		printf "\\t - MongoDB C++ driver found with correct version.\\n"
 	fi
 
 	printf "\\n"
