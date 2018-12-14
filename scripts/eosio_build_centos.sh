@@ -275,7 +275,7 @@
 		&& cmake -G "Unix Makefiles" -DCMAKE_INSTALL_PREFIX=.. -DLLVM_TARGETS_TO_BUILD= -DLLVM_EXPERIMENTAL_TARGETS_TO_BUILD=WebAssembly -DLLVM_ENABLE_RTTI=1 -DCMAKE_BUILD_TYPE=Release ../ \
 		&& make -j1 \
 		&& make install \
-		&& cd ../..
+		&& cd ../.. \
 		&& rm -f $HOME/opt/wasm \
 		&& ln -s $HOME/opt/wasm /usr/local/src/boost_${BOOST_VERSION}
 		printf "\\tWASM compiler successfully installed at ${SRC_LOCATION}/llvm-${LLVM_CLANG_VERSION} (Symlinked to ${HOME}/opt/wasm)\\n"
