@@ -172,6 +172,8 @@
          exit 1
       fi
 
+      mkdir -p $HOME/opt # WASM/LLVM and boost symlinks will exist under this directory
+
       OS_NAME=$( cat /etc/os-release | grep ^NAME | cut -d'=' -f2 | sed 's/\"//gI' )
       MONGODB_CONF=/opt/mongodb/mongod.conf
       export LLVM_DIR=$SRC_LOCATION/llvm-$LLVM_CLANG_VERSION/lib/cmake/llvm
