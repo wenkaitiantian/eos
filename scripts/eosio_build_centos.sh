@@ -226,7 +226,7 @@
 		&& rm -f mongodb-linux-x86_64-amazon-${MONGODB_VERSION}.tgz \
 		&& mv ${SOURCE_DIR}/scripts/mongod.conf /opt/mongodb/mongod.conf \
 		&& mkdir -p /data/db \
-		&& && export PATH=/opt/mongodb/bin:$PATH
+		&& export PATH=/opt/mongodb/bin:$PATH
 		printf "\\t - MongoDB successfully installed @ /opt/mongodb.\\n"
 	else
 		printf "\\t - MongoDB found with correct version."
