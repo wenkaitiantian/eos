@@ -276,7 +276,9 @@
 		&& make -j1 \
 		&& make install \
 		&& cd ../..
-		printf "\\tWASM compiler successfully installed at ${SRC_LOCATION}/llvm-${LLVM_CLANG_VERSION}\\n"
+		&& rm -f $HOME/opt/wasm \
+		&& ln -s $HOME/opt/wasm /usr/local/src/boost_${BOOST_VERSION}
+		printf "\\tWASM compiler successfully installed at ${SRC_LOCATION}/llvm-${LLVM_CLANG_VERSION} (Symlinked to ${HOME}/opt/wasm)\\n"
 	else
 		printf "\\t - WASM found at ${SRC_LOCATION}/llvm-${LLVM_CLANG_VERSION}\\n"
 	fi
