@@ -203,8 +203,8 @@
 		&& ./b2 -q -j$( nproc ) install \
 		&& cd .. \
 		&& rm -f boost_${BOOST_VERSION}.tar.bz2 \
-		&& rm -f ~/opt/boost \
-		&& ln -s ~/opt/boost /usr/local/src/boost_${BOOST_VERSION}
+		&& rm -f $HOME/opt/boost \
+		&& ln -s /usr/local/src/boost_${BOOST_VERSION} $HOME/opt/boost
 		printf "\\tBoost library successfully installed @ %s.\\n\\n"
 	else
 		printf "\\tBoost library found with correct version.\\n"
@@ -266,9 +266,9 @@
 	printf "\\tChecking LLVM with WASM support...\\n"
 	if [ ! -d "${SRC_LOCATION}/llvm-${LLVM_CLANG_VERSION}" ]; then
 		printf "\\tInstalling LLVM with WASM...\\n"
-		git clone --depth 1 --single-branch --branch ${LLVM_CLANG_VERSION} https://github.com/llvm-mirror/llvm.git llvm-${LLVM_CLANG_VERSION} \
-		&& cd llvm-${LLVM_CLANG_VERSION}/tools \
-		&& git clone --depth 1 --single-branch --branch ${LLVM_CLANG_VERSION} https://github.com/llvm-mirror/clang.git clang-${LLVM_CLANG_VERSION} \
+		git clone --depth 1 --single-branch --branch ${LLVM_CLANG_VERSION} https://github.com/llvm-mirror/llvm.git llvm-$LLVM_CLANG_VERSION \
+		&& cd llvm-$LLVM_CLANG_VERSION/tools \
+		&& git clone --depth 1 --single-branch --branch ${LLVM_CLANG_VERSION} https://github.com/llvm-mirror/clang.git clang-$LLVM_CLANG_VERSION \
 		&& cd .. \
 		&& mkdir build \
 		&& cd build \
@@ -277,7 +277,7 @@
 		&& make install \
 		&& cd ../.. \
 		&& rm -f $HOME/opt/wasm \
-		&& ln -s $HOME/opt/wasm /usr/local/src/boost_${BOOST_VERSION}
+		&& ln -s /usr/local/src/boost_$BOOST_VERSION $HOME/opt/wasm
 		printf "\\tWASM compiler successfully installed at ${SRC_LOCATION}/llvm-${LLVM_CLANG_VERSION} (Symlinked to ${HOME}/opt/wasm)\\n"
 	else
 		printf "\\t - WASM found at ${SRC_LOCATION}/llvm-${LLVM_CLANG_VERSION}\\n"
