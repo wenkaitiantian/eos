@@ -52,7 +52,7 @@
 			printf "Exiting now.\\n"
 			exit 1;
 	fi
-	printf "- Yum installation found at %s.\\n" "${YUM}"
+	printf " - Yum installation found at %s.\\n" "${YUM}"
 
 	printf "\\nDo you wish to update YUM repositories?\\n\\n"
 	select yn in "Yes" "No"; do
