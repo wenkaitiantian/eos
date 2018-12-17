@@ -149,6 +149,7 @@
 		printf "CMAKE found @ $(command -v cmake 2>/dev/null).\\n"
 	fi
 
+	printf "\\n"
 
 	printf "\\nChecking Boost library (${BOOST_VERSION}) installation...\\n"
     if [ ! -d ${SRC_LOCATION}/boost_${BOOST_VERSION} ]; then
