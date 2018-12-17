@@ -287,6 +287,8 @@
 		printf " - WASM found at ${SRC_LOCATION}/llvm-${LLVM_CLANG_VERSION}\\n"
 	fi
 
+	cd ..
+
 	printf "\\n"
 
 	function print_instructions()
