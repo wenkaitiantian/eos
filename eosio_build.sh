@@ -30,6 +30,7 @@
 # https://github.com/EOSIO/eos/blob/master/LICENSE
 ##########################################################################
 
+   VERSION=2.0 # Build script version
 	CMAKE_VERSION_MAJOR=3
 	CMAKE_VERSION_MINOR=10
 	CMAKE_VERSION_PATCH=2
@@ -45,14 +46,6 @@
 	LLVM_CLANG_VERSION=release_40
 	TINI_VERSION=0.18.0
 
-   SOURCE_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-
-   function usage()
-   {
-      printf "Usage: %s \\n[Build Option -o <Debug|Release|RelWithDebInfo|MinSizeRel>] \\n[CodeCoverage -c] \\n[Doxygen -d] \\n[CoreSymbolName -s <1-7 characters>] \\n[Avoid Compiling -a]\\n\\n" "$0" 1>&2
-      exit 1
-   }
-
    ARCH=$( uname )
    if [ "${SOURCE_DIR}" == "${PWD}" ]; then
       BUILD_DIR="${PWD}/build"
@@ -64,6 +57,20 @@
    DOXYGEN=false
    ENABLE_COVERAGE_TESTING=false
    CORE_SYMBOL_NAME="SYS"
+   START_MAKE=true
+   TIME_BEGIN=$( date -u +%s )
+   txtbld=$(tput bold)
+   bldred=${txtbld}$(tput setaf 1)
+   txtrst=$(tput sgr0)
+
+   SOURCE_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+   function usage()
+   {
+      printf "Usage: %s \\n[Build Option -o <Debug|Release|RelWithDebInfo|MinSizeRel>] \\n[CodeCoverage -c] \\n[Doxygen -d] \\n[CoreSymbolName -s <1-7 characters>] \\n[Avoid Compiling -a]\\n\\n" "$0" 1>&2
+      exit 1
+   }
+
    # Use current directory's tmp directory if noexec is enabled for /tmp
    if (mount | grep "/tmp " | grep --quiet noexec); then
         mkdir -p $SOURCE_DIR/tmp
@@ -72,13 +79,6 @@
    else # noexec wasn't found
         TEMP_DIR="/tmp"
    fi
-   START_MAKE=true
-   TIME_BEGIN=$( date -u +%s )
-   VERSION=1.2
-
-   txtbld=$(tput bold)
-   bldred=${txtbld}$(tput setaf 1)
-   txtrst=$(tput sgr0)
 
    if [ $# -ne 0 ]; then
       while getopts ":cdo:s:ah" opt; do
