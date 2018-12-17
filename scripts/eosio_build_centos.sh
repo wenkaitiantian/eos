@@ -239,12 +239,12 @@
 		curl -LO https://github.com/mongodb/mongo-c-driver/releases/download/${MONGO_C_DRIVER_VERSION}/mongo-c-driver-${MONGO_C_DRIVER_VERSION}.tar.gz \
 		&& tar -xf mongo-c-driver-${MONGO_C_DRIVER_VERSION}.tar.gz \
 		&& cd mongo-c-driver-${MONGO_C_DRIVER_VERSION} \
-		&& ./configure --enable-static --with-libbson=bundled --enable-ssl=openssl --disable-automatic-init-and-cleanup --prefix=/usr/local \
+		&& cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr/local -DENABLE_BSON=ON -DENABLE_SSL=OPENSSL -DENABLE_AUTOMATIC_INIT_AND_CLEANUP=OFF -DENABLE_STATIC=ON ..
 		&& make -j$(nproc) \
 		&& make install \
 		&& cd .. \
 		&& rm mongo-c-driver-${MONGO_C_DRIVER_VERSION}.tar.gz
-		printf "\\t - MongoDB C driver successfully installed @ %s.\\n"
+		printf "\\t - MongoDB C driver successfully installed @ .\\n"
 	else
 		printf "\\t - MongoDB C driver found with correct version.\\n"
 	fi
@@ -290,7 +290,7 @@
 	{
 		printf "\\t%s -f %s &\\n" "$( command -v mongod )" "${MONGODB_CONF}"
 		printf "\\tsource /opt/rh/python33/enable\\n"
-		printf '\texport PATH=/opt/mongodb/bin:$PATH\n'
+		printf "\\texport PATH=/opt/mongodb/bin:$PATH\n"
 		printf "\\tcd %s; make test\\n\\n" "${BUILD_DIR}"
 		return 0
 	}
