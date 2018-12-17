@@ -47,6 +47,7 @@
 	TINI_VERSION=0.18.0
 
    ARCH=$( uname )
+   SOURCE_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
    if [ "${SOURCE_DIR}" == "${PWD}" ]; then
       BUILD_DIR="${PWD}/build"
    else
@@ -62,8 +63,6 @@
    txtbld=$(tput bold)
    bldred=${txtbld}$(tput setaf 1)
    txtrst=$(tput sgr0)
-
-   SOURCE_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
    function usage()
    {
