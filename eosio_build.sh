@@ -45,14 +45,15 @@
 	BOOST_VERSION=${BOOST_VERSION_MAJOR}_${BOOST_VERSION_MINOR}_${BOOST_VERSION_PATCH}
 	LLVM_CLANG_VERSION=release_40
 	TINI_VERSION=0.18.0
-
-   ARCH=$( uname )
+   
    SOURCE_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
    if [ "${SOURCE_DIR}" == "${PWD}" ]; then
       BUILD_DIR="${PWD}/build"
    else
       BUILD_DIR="${PWD}"
    fi
+   
+   ARCH=$( uname )
    CMAKE_BUILD_TYPE=Release
    DISK_MIN=20
    DOXYGEN=false
