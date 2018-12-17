@@ -49,7 +49,7 @@
 
    function usage()
    {
-      printf "\\tUsage: %s \\n\\t[Build Option -o <Debug|Release|RelWithDebInfo|MinSizeRel>] \\n\\t[CodeCoverage -c] \\n\\t[Doxygen -d] \\n\\t[CoreSymbolName -s <1-7 characters>] \\n\\t[Avoid Compiling -a]\\n\\n" "$0" 1>&2
+      printf "Usage: %s \\n[Build Option -o <Debug|Release|RelWithDebInfo|MinSizeRel>] \\n[CodeCoverage -c] \\n[Doxygen -d] \\n[CoreSymbolName -s <1-7 characters>] \\n[Avoid Compiling -a]\\n\\n" "$0" 1>&2
       exit 1
    }
 
@@ -88,7 +88,7 @@
                if [[ "${options[*]}" =~ "${OPTARG}" ]]; then
                   CMAKE_BUILD_TYPE="${OPTARG}"
                else
-                  printf "\\n\\tInvalid argument: %s\\n" "${OPTARG}" 1>&2
+                  printf "\\nInvalid argument: %s\\n" "${OPTARG}" 1>&2
                   usage
                   exit 1
                fi
@@ -101,7 +101,7 @@
             ;;
             s)
                if [ "${#OPTARG}" -gt 7 ] || [ -z "${#OPTARG}" ]; then
-                  printf "\\n\\tInvalid argument: %s\\n" "${OPTARG}" 1>&2
+                  printf "\\nInvalid argument: %s\\n" "${OPTARG}" 1>&2
                   usage
                   exit 1
                else
@@ -116,12 +116,12 @@
                exit 1
             ;;
             \? )
-               printf "\\n\\tInvalid Option: %s\\n" "-${OPTARG}" 1>&2
+               printf "\\nInvalid Option: %s\\n" "-${OPTARG}" 1>&2
                usage
                exit 1
             ;;
             : )
-               printf "\\n\\tInvalid Option: %s requires an argument.\\n" "-${OPTARG}" 1>&2
+               printf "\\nInvalid Option: %s requires an argument.\\n" "-${OPTARG}" 1>&2
                usage
                exit 1
             ;;
@@ -134,9 +134,9 @@
    fi
 
    if [ ! -d "${SOURCE_DIR}/.git" ]; then
-      printf "\\n\\tThis build script only works with sources cloned from git\\n"
-      printf "\\tPlease clone a new eos directory with 'git clone https://github.com/EOSIO/eos --recursive'\\n"
-      printf "\\tSee the wiki for instructions: https://github.com/EOSIO/eos/wiki\\n"
+      printf "\\nThis build script only works with sources cloned from git\\n"
+      printf "Please clone a new eos directory with 'git clone https://github.com/EOSIO/eos --recursive'\\n"
+      printf "See the wiki for instructions: https://github.com/EOSIO/eos/wiki\\n"
       exit 1
    fi
 
@@ -144,31 +144,31 @@
 
    STALE_SUBMODS=$(( $(git submodule status --recursive | grep -c "^[+\-]") ))
    if [ $STALE_SUBMODS -gt 0 ]; then
-      printf "\\n\\tgit submodules are not up to date.\\n"
-      printf "\\tPlease run the command 'git submodule update --init --recursive'.\\n"
+      printf "\\ngit submodules are not up to date.\\n"
+      printf "Please run the command 'git submodule update --init --recursive'.\\n"
       exit 1
    fi
 
-   printf "\\n\\tBeginning build version: %s\\n" "${VERSION}"
-   printf "\\t%s\\n" "$( date -u )"
-   printf "\\tUser: %s\\n" "$( whoami )"
-   # printf "\\tgit head id: %s\\n" "$( cat .git/refs/heads/master )"
-   printf "\\tCurrent branch: %s\\n" "$( git rev-parse --abbrev-ref HEAD )"
-   printf "\\n\\tARCHITECTURE: %s\\n" "${ARCH}"
+   printf "\\nBeginning build version: %s\\n" "${VERSION}"
+   printf "%s\\n" "$( date -u )"
+   printf "User: %s\\n" "$( whoami )"
+   # printf "git head id: %s\\n" "$( cat .git/refs/heads/master )"
+   printf "Current branch: %s\\n" "$( git rev-parse --abbrev-ref HEAD )"
+   printf "\\nARCHITECTURE: %s\\n" "${ARCH}"
 
    popd &> /dev/null
 
    if [ "$ARCH" == "Linux" ]; then
 
       if [ ! -e /etc/os-release ]; then
-         printf "\\n\\tEOSIO currently supports Amazon, Centos, Fedora, Mint & Ubuntu Linux only.\\n"
-         printf "\\tPlease install on the latest version of one of these Linux distributions.\\n"
-         printf "\\thttps://aws.amazon.com/amazon-linux-ami/\\n"
-         printf "\\thttps://www.centos.org/\\n"
-         printf "\\thttps://start.fedoraproject.org/\\n"
-         printf "\\thttps://linuxmint.com/\\n"
-         printf "\\thttps://www.ubuntu.com/\\n"
-         printf "\\tExiting now.\\n"
+         printf "\\nEOSIO currently supports Amazon, Centos, Fedora, Mint & Ubuntu Linux only.\\n"
+         printf "Please install on the latest version of one of these Linux distributions.\\n"
+         printf "https://aws.amazon.com/amazon-linux-ami/\\n"
+         printf "https://www.centos.org/\\n"
+         printf "https://start.fedoraproject.org/\\n"
+         printf "https://linuxmint.com/\\n"
+         printf "https://www.ubuntu.com/\\n"
+         printf "Exiting now.\\n"
          exit 1
       fi
 
@@ -215,7 +215,7 @@
             C_COMPILER=clang-4.0
          ;;
          *)
-            printf "\\n\\tUnsupported Linux Distribution. Exiting now.\\n\\n"
+            printf "\\nUnsupported Linux Distribution. Exiting now.\\n\\n"
             exit 1
       esac
       export BOOST_ROOT="${SRC_LOCATION}/boost_${BOOST_VERSION}"
@@ -232,7 +232,7 @@
 
    ${SOURCE_DIR}/scripts/clean_old_install.sh
    if [ $? -ne 0 ]; then
-      printf "\\n\\tError occurred while trying to remove old installation!\\n\\n"
+      printf "\\nError occurred while trying to remove old installation!\\n\\n"
       exit -1
    fi
 
@@ -267,19 +267,19 @@
       -DENABLE_COVERAGE_TESTING="${ENABLE_COVERAGE_TESTING}" -DBUILD_DOXYGEN="${DOXYGEN}" \
       -DCMAKE_INSTALL_PREFIX="/usr/local/eosio" ${LOCAL_CMAKE_FLAGS} "${SOURCE_DIR}"
    then
-      printf "\\n\\t>>>>>>>>>>>>>>>>>>>> CMAKE building EOSIO has exited with the above error.\\n\\n"
+      printf "\\n>>>>>>>>>>>>>>>>>>>> CMAKE building EOSIO has exited with the above error.\\n\\n"
       exit -1
    fi
 
    if [ "${START_MAKE}" == "false" ]; then
-      printf "\\n\\t>>>>>>>>>>>>>>>>>>>> EOSIO has been successfully configured but not yet built.\\n\\n"
+      printf "\\n>>>>>>>>>>>>>>>>>>>> EOSIO has been successfully configured but not yet built.\\n\\n"
       exit 0
    fi
 
    if [ -z ${JOBS} ]; then JOBS=$CPU_CORE; fi # Future proofing: Ensure $JOBS is set (usually set in scripts/eosio_build_*.sh scripts)
    if ! make -j"${JOBS}"
    then
-      printf "\\n\\t>>>>>>>>>>>>>>>>>>>> MAKE building EOSIO has exited with the above error.\\n\\n"
+      printf "\\n>>>>>>>>>>>>>>>>>>>> MAKE building EOSIO has exited with the above error.\\n\\n"
       exit -1
    fi
 
@@ -294,14 +294,14 @@
    printf "\t| (____/\| (___) |/\____) |___) (___| (___) |\n"
    printf "\t(_______/(_______)\_______)\_______/(_______)\n${txtrst}"
 
-   printf "\\n\\tEOSIO has been successfully built. %02d:%02d:%02d\\n\\n" $(($TIME_END/3600)) $(($TIME_END%3600/60)) $(($TIME_END%60))
-   printf "\\tTo verify your installation run the following commands:\\n"
+   printf "\\nEOSIO has been successfully built. %02d:%02d:%02d\\n\\n" $(($TIME_END/3600)) $(($TIME_END%3600/60)) $(($TIME_END%60))
+   printf "To verify your installation run the following commands:\\n"
 
    print_instructions
 
-   printf "\\tFor more information:\\n"
-   printf "\\tEOSIO website: https://eos.io\\n"
-   printf "\\tEOSIO Telegram channel @ https://t.me/EOSProject\\n"
-   printf "\\tEOSIO resources: https://eos.io/resources/\\n"
-   printf "\\tEOSIO Stack Exchange: https://eosio.stackexchange.com\\n"
-   printf "\\tEOSIO wiki: https://github.com/EOSIO/eos/wiki\\n\\n\\n"
+   printf "For more information:\\n"
+   printf "EOSIO website: https://eos.io\\n"
+   printf "EOSIO Telegram channel @ https://t.me/EOSProject\\n"
+   printf "EOSIO resources: https://eos.io/resources/\\n"
+   printf "EOSIO Stack Exchange: https://eosio.stackexchange.com\\n"
+   printf "EOSIO wiki: https://github.com/EOSIO/eos/wiki\\n\\n\\n"
