@@ -21,14 +21,14 @@
 	# Legacy path support (ln -s for boost/wasm) | TODO: Remove reliance on $HOME/opt for /opt
 	mkdir -p $HOME/opt
 
-	printf "\\nOS name: %s\\n" "${OS_NAME}"
-	printf "OS Version: %s\\n" "${OS_VER}"
-	printf "CPU speed: %sMhz\\n" "${CPU_SPEED}"
+	printf "\\nOS name: ${OS_NAME}\\n"
+	printf "OS Version: ${OS_VER}\\n"
+	printf "CPU speed: ${CPU_SPEED}Mhz\\n"
 	printf "CPU cores: %s\\n" "${CPU_CORE}"
-	printf "Physical Memory: %s Mgb\\n" "${MEM_MEG}"
-	printf "Disk install: %s\\n" "${DISK_INSTALL}"
-	printf "Disk space total: %sG\\n" "${DISK_TOTAL%.*}"
-	printf "Disk space available: %sG\\n" "${DISK_AVAIL%.*}"
+	printf "Physical Memory: ${MEM_MEG} Mgb\\n"
+	printf "Disk install: ${DISK_INSTALL}\\n"
+	printf "Disk space total: ${DISK_TOTAL%.*}G\\n"
+	printf "Disk space available: ${DISK_AVAIL%.*}G\\n"
 
 	if [ "${MEM_MEG}" -lt 7000 ]; then
 		printf "Your system must have 7 or more Gigabytes of physical memory installed.\\n"
@@ -49,6 +49,10 @@
 				printf "You must be running Ubuntu 16.04.x or higher to install EOSIO.\\n"
 				printf "Exiting now.\\n"
 				exit 1
+			fi
+			# UBUNTU 18 doesn't have MONGODB 3.6.3
+			if [ $OS_MAJ -gt 16 ]; then
+				MONGODB_VERSION=4.1.1
 			fi
 		;;
 		"Debian")
@@ -193,8 +197,7 @@
 		&& rm -f mongodb-linux-x86_64-amazon-${MONGODB_VERSION}.tgz \
 		&& mv ${SOURCE_DIR}/scripts/mongod.conf /opt/mongodb/mongod.conf \
 		&& mkdir -p /data/db \
-		&& mkdir -p /var/log/mongodb \
-		&& export PATH=/opt/mongodb/bin:$PATH
+		&& mkdir -p /var/log/mongodb
 		printf " - MongoDB successfully installed @ /opt/mongodb.\\n"
 	else
 		printf " - MongoDB found with correct version."
@@ -260,7 +263,7 @@
 
 	function print_instructions()
 	{
-		printf '\n\texport PATH=${HOME}/opt/mongodb/bin:$PATH\n'
+		printf '\n\texport PATH=/opt/mongodb/bin:$PATH\n'
 		printf "%s -f %s &\\n" "$( command -v mongod )" "${MONGOD_CONF}"
 		printf "cd %s; make test\\n\\n" "${BUILD_DIR}"
 	return 0

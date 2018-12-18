@@ -31,20 +31,20 @@
 ##########################################################################
 
    VERSION=2.0 # Build script version
-	CMAKE_VERSION_MAJOR=3
-	CMAKE_VERSION_MINOR=10
-	CMAKE_VERSION_PATCH=2
-	CMAKE_VERSION=${CMAKE_VERSION_MAJOR}.${CMAKE_VERSION_MINOR}.${CMAKE_VERSION_PATCH}
-	MONGODB_VERSION=3.6.3
-	MONGO_C_DRIVER_VERSION=1.10.2
-	MONGO_CXX_DRIVER_VERSION=3.3
-	SRC_LOCATION=/usr/local/src
-	BOOST_VERSION_MAJOR=1
-	BOOST_VERSION_MINOR=67
-	BOOST_VERSION_PATCH=0
-	BOOST_VERSION=${BOOST_VERSION_MAJOR}_${BOOST_VERSION_MINOR}_${BOOST_VERSION_PATCH}
-	LLVM_CLANG_VERSION=release_40
-	TINI_VERSION=0.18.0
+	export CMAKE_VERSION_MAJOR=3
+	export CMAKE_VERSION_MINOR=10
+	export CMAKE_VERSION_PATCH=2
+	export CMAKE_VERSION=${CMAKE_VERSION_MAJOR}.${CMAKE_VERSION_MINOR}.${CMAKE_VERSION_PATCH}
+	export MONGODB_VERSION=3.6.3
+	export MONGO_C_DRIVER_VERSION=1.10.2
+	export MONGO_CXX_DRIVER_VERSION=3.3
+	export SRC_LOCATION=/usr/local/src
+	export BOOST_VERSION_MAJOR=1
+	export BOOST_VERSION_MINOR=67
+	export BOOST_VERSION_PATCH=0
+	export BOOST_VERSION=${BOOST_VERSION_MAJOR}_${BOOST_VERSION_MINOR}_${BOOST_VERSION_PATCH}
+	export LLVM_CLANG_VERSION=release_40
+	export TINI_VERSION=0.18.0
    
    SOURCE_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
    if [ "${SOURCE_DIR}" == "${PWD}" ]; then
@@ -52,7 +52,7 @@
    else
       BUILD_DIR="${PWD}"
    fi
-   
+
    ARCH=$( uname )
    CMAKE_BUILD_TYPE=Release
    DISK_MIN=20
@@ -174,10 +174,12 @@
 
       mkdir -p $HOME/opt # WASM/LLVM and boost symlinks will exist under this directory
 
-      OS_NAME=$( cat /etc/os-release | grep ^NAME | cut -d'=' -f2 | sed 's/\"//gI' )
-      MONGODB_CONF=/opt/mongodb/mongod.conf
+      export OS_NAME=$( cat /etc/os-release | grep ^NAME | cut -d'=' -f2 | sed 's/\"//gI' )
+      export MONGODB_CONF=/opt/mongodb/mongod.conf
       export LLVM_DIR=$SRC_LOCATION/llvm-$LLVM_CLANG_VERSION/lib/cmake/llvm
       export PATH=/opt/mongodb/bin:$PATH
+      export BOOST_ROOT="${SRC_LOCATION}/boost_${BOOST_VERSION}"
+      OPENSSL_ROOT_DIR=/usr/include/openssl
       case "$OS_NAME" in
          "Amazon Linux AMI"|"Amazon Linux")
             FILE="${SOURCE_DIR}/scripts/eosio_build_amazon.sh"
@@ -218,15 +220,13 @@
             printf "\\nUnsupported Linux Distribution. Exiting now.\\n\\n"
             exit 1
       esac
-      export BOOST_ROOT="${SRC_LOCATION}/boost_${BOOST_VERSION}"
-      OPENSSL_ROOT_DIR=/usr/include/openssl
    fi
 
    if [ "$ARCH" == "Darwin" ]; then
       FILE="${SOURCE_DIR}/scripts/eosio_build_darwin.sh"
       CXX_COMPILER=clang++
       C_COMPILER=clang
-      MONGODB_CONF=/usr/local/etc/mongod.conf
+      export MONGODB_CONF=/usr/local/etc/mongod.conf
       OPENSSL_ROOT_DIR=/usr/local/opt/openssl
    fi
 

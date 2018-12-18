@@ -19,14 +19,14 @@
 	# Legacy path support (ln -s for boost/wasm) | TODO: Remove reliance on $HOME/opt for /opt
 	mkdir -p $HOME/opt
 
-	printf "\\nOS name: %s\\n" "${OS_NAME}"
-	printf "OS Version: %s\\n" "${OS_VER}"
-	printf "CPU speed: %sMhz\\n" "${CPU_SPEED}"
-	printf "CPU cores: %s\\n" "${CPU_CORE}"
-	printf "Physical Memory: %s Mgb\\n" "${MEM_MEG}"
-	printf "Disk install: %s\\n" "${DISK_INSTALL}"
-	printf "Disk space total: %sG\\n" "${DISK_TOTAL%.*}"
-	printf "Disk space available: %sG\\n" "${DISK_AVAIL%.*}"
+	printf "\\nOS name: ${OS_NAME}\\n"
+	printf "OS Version: ${OS_VER}\\n"
+	printf "CPU speed: ${CPU_SPEED}Mhz\\n"
+	printf "CPU cores: ${CPU_CORE}\\n"
+	printf "Physical Memory: ${MEM_MEG}Mgb\\n"
+	printf "Disk install: ${DISK_INSTALL}\\n"
+	printf "Disk space total: ${DISK_TOTAL%.*}G\\n" 
+	printf "Disk space available: ${DISK_AVAIL%.*}G\\n"
 	printf "Concurrent Jobs (make -j): ${JOBS}\\n"
 
 	if [ "${MEM_MEG}" -lt 7000 ]; then
@@ -221,6 +221,7 @@
 
 
 	printf "\\nChecking MongoDB installation...\\n"
+	# eosio_build.sh sets PATH with /opt/mongodb/bin
     if [ ! -e "${MONGODB_CONF}" ]; then
 		printf "Installing MongoDB...\\n"
 		curl -OL https://fastdl.mongodb.org/linux/mongodb-linux-x86_64-amazon-${MONGODB_VERSION}.tgz \
@@ -232,8 +233,7 @@
 		&& rm -f mongodb-linux-x86_64-amazon-${MONGODB_VERSION}.tgz \
 		&& mv ${SOURCE_DIR}/scripts/mongod.conf /opt/mongodb/mongod.conf \
 		&& mkdir -p /data/db \
-		&& mkdir -p /var/log/mongodb \
-		&& export PATH=/opt/mongodb/bin:$PATH
+		&& mkdir -p /var/log/mongodb
 		printf " - MongoDB successfully installed @ /opt/mongodb.\\n"
 	else
 		printf " - MongoDB found with correct version."

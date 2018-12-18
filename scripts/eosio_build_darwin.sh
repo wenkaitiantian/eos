@@ -16,14 +16,14 @@
 	DISK_TOTAL=$((total_blks / gbfactor ))
 	DISK_AVAIL=$((avail_blks / gbfactor ))
 
-	printf "\\n\\tOS name: %s\\n" "${ARCH}"
-	printf "\\tOS Version: %s\\n" "${OS_VER}"
-	printf "\\tCPU speed: %sGhz\\n" "${CPU_SPEED}"
-	printf "\\tCPU cores: %s\\n" "${CPU_CORE}"
-	printf "\\tPhysical Memory: %s Gbytes\\n" "${MEM_GIG}"
-	printf "\\tDisk install: %s\\n" "${DISK_INSTALL}"
-	printf "\\tDisk space total: %sG\\n" "${DISK_TOTAL}"
-	printf "\\tDisk space available: %sG\\n\\n" "${DISK_AVAIL}"
+	printf "\\nOS name: ${OS_NAME}\\n"
+	printf "OS Version: ${OS_VER}\\n"
+	printf "CPU speed: ${CPU_SPEED}Mhz\\n"
+	printf "CPU cores: %s\\n" "${CPU_CORE}"
+	printf "Physical Memory: ${MEM_GIG} Gbytes\\n"
+	printf "Disk install: ${DISK_INSTALL}\\n"
+	printf "Disk space total: ${DISK_TOTAL}G\\n"
+	printf "Disk space available: ${DISK_AVAIL}G\\n"
 
 	if [ "${MEM_GIG}" -lt 7 ]; then
 		echo "Your system must have 7 or more Gigabytes of physical memory installed."
@@ -43,33 +43,33 @@
 		exit 1
 	fi
 
-	printf "\\tChecking xcode-select installation\\n"
+	printf "Checking xcode-select installation\\n"
 	if ! XCODESELECT=$( command -v xcode-select)
 	then
-		printf "\\n\\tXCode must be installed in order to proceed.\\n\\n"
-		printf "\\tExiting now.\\n"
+		printf "\\nXCode must be installed in order to proceed.\\n\\n"
+		printf "Exiting now.\\n"
 		exit 1
 	fi
 
-	printf "\\txcode-select installation found @ \\n"
-	printf "\\t%s \\n\\n" "${XCODESELECT}"
+	printf "xcode-select installation found @ \\n"
+	printf "%s \\n\\n" "${XCODESELECT}"
 
-	printf "\\tChecking Ruby installation.\\n"
+	printf "Checking Ruby installation.\\n"
 	if ! RUBY=$( command -v ruby)
 	then
 		printf "\\nRuby must be installed in order to proceed.\\n\\n"
-		printf "\\tExiting now.\\n"
+		printf "Exiting now.\\n"
 		exit 1
 	fi
 
-	printf "\\tRuby installation found @ \\n"
-	printf "\\t%s \\n\\n" "${RUBY}"
+	printf "Ruby installation found @ \\n"
+	printf "%s \\n\\n" "${RUBY}"
 
-	printf "\\tChecking Home Brew installation\\n"
+	printf "Checking Home Brew installation\\n"
 	if ! BREW=$( command -v brew )
 	then
-		printf "\\tHomebrew must be installed to compile EOS.IO\\n\\n"
-		printf "\\tDo you wish to install Home Brew?\\n"
+		printf "Homebrew must be installed to compile EOS.IO\\n\\n"
+		printf "Do you wish to install Home Brew?\\n"
 		select yn in "Yes" "No"; do
 			case "${yn}" in
 				[Yy]* )
@@ -89,28 +89,28 @@
 		done
 	fi
 
-	printf "\\tHome Brew installation found @\\n"
-	printf "\\t%s\\n\\n" "${BREW}"
+	printf "Home Brew installation found @\\n"
+	printf "%s\\n\\n" "${BREW}"
 
 	COUNT=1
 	PERMISSION_GETTEXT=0
 	DISPLAY=""
 	DEP=""
 
-	printf "\\tChecking dependencies.\\n"
+	printf "Checking dependencies.\\n"
 	var_ifs="${IFS}"
 	IFS=","
 	while read -r name tester testee brewname uri
 	do
-		printf "\\tChecking %s ... " "${name}"
+		printf "Checking %s ... " "${name}"
 		if [ "${tester}" "${testee}" ]; then
-			printf "\\t\\t %s found\\n" "${name}"
+			printf " %s found\\n" "${name}"
 			continue
 		fi
 		# resolve conflict with homebrew glibtool and apple/gnu installs of libtool
 		if [ "${testee}" == "/usr/local/bin/glibtool" ]; then
 			if [ "${tester}" "/usr/local/bin/libtool" ]; then
-				printf "\\t\\t %s found\\n" "${name}"
+				printf " %s found\\n" "${name}"
 				continue
 			fi
 		fi
@@ -118,25 +118,25 @@
 			PERMISSION_GETTEXT=1
 		fi
 		DEP=$DEP"${brewname} "
-		DISPLAY="${DISPLAY}${COUNT}. ${name}\\n\\t"
-		printf "\\t\\t %s ${bldred}NOT${txtrst} found.\\n" "${name}"
+		DISPLAY="${DISPLAY}${COUNT}. ${name}\\n"
+		printf " %s ${bldred}NOT${txtrst} found.\\n" "${name}"
 		(( COUNT++ ))
 	done < "${SOURCE_DIR}/scripts/eosio_build_dep"
 	IFS="${var_ifs}"
 
-	printf "\\tChecking Python3 ... "
+	printf "Checking Python3 ... "
 	if [  -z "$( python3 -c 'import sys; print(sys.version_info.major)' 2>/dev/null )" ]; then
 		DEP=$DEP"python@3 "
-		DISPLAY="${DISPLAY}${COUNT}. Python 3\\n\\t"
-		printf "\\t\\t python3 ${bldred}NOT${txtrst} found.\\n"
+		DISPLAY="${DISPLAY}${COUNT}. Python 3\\n"
+		printf " python3 ${bldred}NOT${txtrst} found.\\n"
 		(( COUNT++ ))
 	else
-		printf "\\t\\t Python3 found\\n"
+		printf " Python3 found\\n"
 	fi
 
 	if [ $COUNT -gt 1 ]; then
-		printf "\\n\\tThe following dependencies are required to install EOSIO.\\n"
-		printf "\\n\\t${DISPLAY}\\n\\n"
+		printf "\\nThe following dependencies are required to install EOSIO.\\n"
+		printf "\\n${DISPLAY}\\n\\n"
 		echo "Do you wish to install these packages?"
 		select yn in "Yes" "No"; do
 			case $yn in
@@ -145,26 +145,26 @@
 						sudo chown -R "$(whoami)" /usr/local/share
 					fi
 					"${XCODESELECT}" --install 2>/dev/null;
-					printf "\\tUpdating Home Brew.\\n"
+					printf "Updating Home Brew.\\n"
 					if ! brew update
 					then
-						printf "\\tUnable to update Home Brew at this time.\\n"
-						printf "\\tExiting now.\\n\\n"
+						printf "Unable to update Home Brew at this time.\\n"
+						printf "Exiting now.\\n\\n"
 						exit 1;
 					fi
-					printf "\\tInstalling Dependencies.\\n"
+					printf "Installing Dependencies.\\n"
 					if ! "${BREW}" install --force ${DEP}
 					then
-						printf "\\tHomebrew exited with the above errors.\\n"
-						printf "\\tExiting now.\\n\\n"
+						printf "Homebrew exited with the above errors.\\n"
+						printf "Exiting now.\\n\\n"
 						exit 1;
 					fi
                                         if [[ "$DEP" == "llvm@4" ]]; then
                                                 "${BREW}" unlink ${DEP}
 					elif ! "${BREW}" unlink ${DEP} && "${BREW}" link --force ${DEP}
 					then
-						printf "\\tHomebrew exited with the above errors.\\n"
-						printf "\\tExiting now.\\n\\n"
+						printf "Homebrew exited with the above errors.\\n"
+						printf "Exiting now.\\n\\n"
 						exit 1;
 					fi
 				break;;
@@ -173,41 +173,41 @@
 			esac
 		done
 	else
-		printf "\\n\\tNo required Home Brew dependencies to install.\\n"
+		printf "\\nNo required Home Brew dependencies to install.\\n"
 	fi
 
 
-	printf "\\n\\tChecking boost library installation.\\n"
+	printf "\\nChecking boost library installation.\\n"
 	BVERSION=$( grep "#define BOOST_VERSION" "/usr/local/include/boost/version.hpp" 2>/dev/null | tail -1 | tr -s ' ' | cut -d\  -f3 )
 	if [ "${BVERSION}" != "106700" ]; then
 		if [ ! -z "${BVERSION}" ]; then
-			printf "\\tFound Boost Version %s.\\n" "${BVERSION}"
-			printf "\\tEOS.IO requires Boost version 1.67.\\n"
-			printf "\\tWould you like to uninstall version %s and install Boost version 1.67.\\n" "${BVERSION}"
+			printf "Found Boost Version %s.\\n" "${BVERSION}"
+			printf "EOS.IO requires Boost version 1.67.\\n"
+			printf "Would you like to uninstall version %s and install Boost version 1.67.\\n" "${BVERSION}"
 			select yn in "Yes" "No"; do
 				case $yn in
 					[Yy]* )
 						if "${BREW}" list | grep "boost"
 						then
-							printf "\\tUninstalling Boost Version %s.\\n" "${BVERSION}"
+							printf "Uninstalling Boost Version %s.\\n" "${BVERSION}"
 							if ! "${BREW}" uninstall --force boost
 							then
-								printf "\\tUnable to remove boost libraries at this time. 0\\n"
-								printf "\\tExiting now.\\n\\n"
+								printf "Unable to remove boost libraries at this time. 0\\n"
+								printf "Exiting now.\\n\\n"
 								exit 1;
 							fi
 						else
-							printf "\\tRemoving Boost Version %s.\\n" "${BVERSION}"
+							printf "Removing Boost Version %s.\\n" "${BVERSION}"
 							if ! sudo rm -rf "/usr/local/include/boost"
 							then
-								printf "\\tUnable to remove boost libraries at this time. 1\\n"
-								printf "\\tExiting now.\\n\\n"
+								printf "Unable to remove boost libraries at this time. 1\\n"
+								printf "Exiting now.\\n\\n"
 								exit 1;
 							fi
 							if ! sudo rm -rf /usr/local/lib/libboost*
 							then
-								printf "\\tUnable to remove boost libraries at this time. 2\\n"
-								printf "\\tExiting now.\\n\\n"
+								printf "Unable to remove boost libraries at this time. 2\\n"
+								printf "Exiting now.\\n\\n"
 								exit 1;
 							fi
 						fi
@@ -217,35 +217,35 @@
 				esac
 			done
 		fi
-		printf "\\tInstalling boost libraries.\\n"
+		printf "Installing boost libraries.\\n"
 		if ! "${BREW}" install https://raw.githubusercontent.com/Homebrew/homebrew-core/f946d12e295c8a27519b73cc810d06593270a07f/Formula/boost.rb
 		then
-			printf "\\tUnable to install boost 1.67 libraries at this time. 0\\n"
-			printf "\\tExiting now.\\n\\n"
+			printf "Unable to install boost 1.67 libraries at this time. 0\\n"
+			printf "Exiting now.\\n\\n"
 			exit 1;
 		fi
 		if [ -d "$BUILD_DIR" ]; then
 			if ! rm -rf "$BUILD_DIR"
 			then
-			printf "\\tUnable to remove directory %s. Please remove this directory and run this script %s again. 0\\n" "$BUILD_DIR" "${BASH_SOURCE[0]}"
-			printf "\\tExiting now.\\n\\n"
+			printf "Unable to remove directory %s. Please remove this directory and run this script %s again. 0\\n" "$BUILD_DIR" "${BASH_SOURCE[0]}"
+			printf "Exiting now.\\n\\n"
 			exit 1;
 			fi
 		fi
-		printf "\\tBoost 1.67.0 successfully installed @ /usr/local.\\n"
+		printf "Boost 1.67.0 successfully installed @ /usr/local.\\n"
 	else
-		printf "\\tBoost 1.67.0 found at /usr/local.\\n"
+		printf "Boost 1.67.0 found at /usr/local.\\n"
 	fi
 
-	printf "\\n\\tChecking MongoDB C++ driver installation.\\n"
+	printf "\\nChecking MongoDB C++ driver installation.\\n"
 	MONGO_INSTALL=true
 
     if [ -e "/usr/local/lib/libmongocxx-static.a" ]; then
 		MONGO_INSTALL=false
 		if ! version=$( grep "Version:" /usr/local/lib/pkgconfig/libmongocxx-static.pc | tr -s ' ' | awk '{print $2}' )
 		then
-			printf "\\tUnable to determine mongodb-cxx-driver version.\\n"
-			printf "\\tExiting now.\\n\\n"
+			printf "Unable to determine mongodb-cxx-driver version.\\n"
+			printf "Exiting now.\\n\\n"
 			exit 1;
 		fi
 
@@ -261,22 +261,22 @@
     if [ $MONGO_INSTALL == "true" ]; then
 		if ! cd "${TEMP_DIR}"
 		then
-			printf "\\tUnable to enter directory %s.\\n" "${TEMP_DIR}"
-			printf "\\tExiting now.\\n\\n"
+			printf "Unable to enter directory %s.\\n" "${TEMP_DIR}"
+			printf "Exiting now.\\n\\n"
 			exit 1;
 		fi
 		if ! pkgconfig=$( "${BREW}" list | grep pkg-config )
 		then
 			if ! "${BREW}" install --force pkg-config
 			then
-				printf "\\tHomebrew returned an error installing pkg-config.\\n"
-				printf "\\tExiting now.\\n\\n"
+				printf "Homebrew returned an error installing pkg-config.\\n"
+				printf "Exiting now.\\n\\n"
 				exit 1;
 			fi
 			if ! "${BREW}" unlink pkg-config && "${BREW}" link --force pkg-config
 			then
-				printf "\\tHomebrew returned an error linking pkgconfig.\\n"
-				printf "\\tExiting now.\\n\\n"
+				printf "Homebrew returned an error linking pkgconfig.\\n"
+				printf "Exiting now.\\n\\n"
 				exit 1;
 			fi
 		fi
@@ -284,204 +284,204 @@
 		if [ "${STATUS}" -ne 200 ]; then
 			if ! rm -f "${TEMP_DIR}/mongo-c-driver-1.10.2.tar.gz"
 			then
-				printf "\\tUnable to remove file %s/mongo-c-driver-1.10.2.tar.gz.\\n" "${TEMP_DIR}"
+				printf "Unable to remove file %s/mongo-c-driver-1.10.2.tar.gz.\\n" "${TEMP_DIR}"
 			fi
-			printf "\\tUnable to download MongoDB C driver at this time.\\n"
-			printf "\\tExiting now.\\n\\n"
+			printf "Unable to download MongoDB C driver at this time.\\n"
+			printf "Exiting now.\\n\\n"
 			exit 1;
 		fi
 		if ! tar xf mongo-c-driver-1.10.2.tar.gz
 		then
-			printf "\\tUnable to unarchive file %s/mongo-c-driver-1.10.2.tar.gz.\\n" "${TEMP_DIR}"
-			printf "\\tExiting now.\\n\\n"
+			printf "Unable to unarchive file %s/mongo-c-driver-1.10.2.tar.gz.\\n" "${TEMP_DIR}"
+			printf "Exiting now.\\n\\n"
 			exit 1;
 		fi
 		if ! rm -f "${TEMP_DIR}/mongo-c-driver-1.10.2.tar.gz"
 		then
-			printf "\\tUnable to remove file mongo-c-driver-1.10.2.tar.gz.\\n"
-			printf "\\tExiting now.\\n\\n"
+			printf "Unable to remove file mongo-c-driver-1.10.2.tar.gz.\\n"
+			printf "Exiting now.\\n\\n"
 			exit 1;
 		fi
 		if ! cd "${TEMP_DIR}"/mongo-c-driver-1.10.2
 		then
-			printf "\\tUnable to cd into directory %s/mongo-c-driver-1.10.2.\\n" "${TEMP_DIR}"
-			printf "\\tExiting now.\\n\\n"
+			printf "Unable to cd into directory %s/mongo-c-driver-1.10.2.\\n" "${TEMP_DIR}"
+			printf "Exiting now.\\n\\n"
 			exit 1;
 		fi
 		if ! mkdir cmake-build
 		then
-			printf "\\tUnable to create directory %s/mongo-c-driver-1.10.2/cmake-build.\\n" "${TEMP_DIR}"
-			printf "\\tExiting now.\\n\\n"
+			printf "Unable to create directory %s/mongo-c-driver-1.10.2/cmake-build.\\n" "${TEMP_DIR}"
+			printf "Exiting now.\\n\\n"
 			exit 1;
 		fi
 		if ! cd cmake-build
 		then
-			printf "\\tUnable to enter directory %s/mongo-c-driver-1.10.2/cmake-build.\\n" "${TEMP_DIR}"
-			printf "\\tExiting now.\\n\\n"
+			printf "Unable to enter directory %s/mongo-c-driver-1.10.2/cmake-build.\\n" "${TEMP_DIR}"
+			printf "Exiting now.\\n\\n"
 			exit 1;
 		fi
 		if ! cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr/local -DENABLE_BSON=ON \
 		-DENABLE_SSL=DARWIN -DENABLE_AUTOMATIC_INIT_AND_CLEANUP=OFF -DENABLE_STATIC=ON ..
 		then
-			printf "\\tConfiguring MongoDB C driver has encountered the errors above.\\n"
-			printf "\\tExiting now.\\n\\n"
+			printf "Configuring MongoDB C driver has encountered the errors above.\\n"
+			printf "Exiting now.\\n\\n"
 			exit 1;
 		fi
 		if ! make -j"${CPU_CORE}"
 		then
-			printf "\\tError compiling MongoDB C driver.\\n"
-			printf "\\tExiting now.\\n\\n"
+			printf "Error compiling MongoDB C driver.\\n"
+			printf "Exiting now.\\n\\n"
 			exit 1;
 		fi
 		if ! sudo make install
 		then
-			printf "\\tError installing MongoDB C driver.\\nMake sure you have sudo privileges.\\n"
-			printf "\\tExiting now.\\n\\n"
+			printf "Error installing MongoDB C driver.\\nMake sure you have sudo privileges.\\n"
+			printf "Exiting now.\\n\\n"
 			exit 1;
 		fi
 		if ! cd "${TEMP_DIR}"
 		then
-			printf "\\tUnable to enter directory %s.\\n" "${TEMP_DIR}"
-			printf "\\tExiting now.\\n\\n"
+			printf "Unable to enter directory %s.\\n" "${TEMP_DIR}"
+			printf "Exiting now.\\n\\n"
 			exit 1;
 		fi
 		if ! rm -rf "${TEMP_DIR}/mongo-c-driver-1.10.2"
 		then
-			printf "\\tUnable to remove directory %s/mongo-c-driver-1.10.2.\\n" "${TEMP_DIR}"
-			printf "\\tExiting now.\\n\\n"
+			printf "Unable to remove directory %s/mongo-c-driver-1.10.2.\\n" "${TEMP_DIR}"
+			printf "Exiting now.\\n\\n"
 			exit 1;
 		fi
 		if ! git clone https://github.com/mongodb/mongo-cxx-driver.git --branch releases/v3.3 --depth 1
 		then
-			printf "\\tUnable to clone MongoDB C++ driver at this time.\\n"
-			printf "\\tExiting now.\\n\\n"
+			printf "Unable to clone MongoDB C++ driver at this time.\\n"
+			printf "Exiting now.\\n\\n"
 			exit 1;
 		fi
 		if ! cd "${TEMP_DIR}/mongo-cxx-driver/build"
 		then
-			printf "\\tUnable to enter directory %s/mongo-cxx-driver/build.\\n" "${TEMP_DIR}"
-			printf "\\tExiting now.\\n\\n"
+			printf "Unable to enter directory %s/mongo-cxx-driver/build.\\n" "${TEMP_DIR}"
+			printf "Exiting now.\\n\\n"
 			exit 1;
 		fi
 		if ! cmake -DBUILD_SHARED_LIBS=OFF -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr/local ..
 		then
-			printf "\\tCmake has encountered the above errors building the MongoDB C++ driver.\\n"
-			printf "\\tExiting now.\\n\\n"
+			printf "Cmake has encountered the above errors building the MongoDB C++ driver.\\n"
+			printf "Exiting now.\\n\\n"
 			exit 1;
 		fi
 		if ! make -j"${CPU_CORE}"
 		then
-			printf "\\tError compiling MongoDB C++ driver.\\n"
-			printf "\\tExiting now.\\n\\n"
+			printf "Error compiling MongoDB C++ driver.\\n"
+			printf "Exiting now.\\n\\n"
 			exit 1;
 		fi
 		if ! sudo make install
 		then
-			printf "\\tError installing MongoDB C++ driver.\\nMake sure you have sudo privileges.\\n"
-			printf "\\tExiting now.\\n\\n"
+			printf "Error installing MongoDB C++ driver.\\nMake sure you have sudo privileges.\\n"
+			printf "Exiting now.\\n\\n"
 			exit 1;
 		fi
 		if ! cd "${TEMP_DIR}"
 		then
-			printf "\\tUnable to enter directory %s.\\n" "${TEMP_DIR}"
-			printf "\\tExiting now.\\n\\n"
+			printf "Unable to enter directory %s.\\n" "${TEMP_DIR}"
+			printf "Exiting now.\\n\\n"
 			exit 1;
 		fi
 		if ! rm -rf "${TEMP_DIR}/mongo-cxx-driver"
 		then
-			printf "\\tUnable to remove directory %s/mongo-cxx-driver.\\n" "${TEMP_DIR}" "${TEMP_DIR}"
-			printf "\\tExiting now.\\n\\n"
+			printf "Unable to remove directory %s/mongo-cxx-driver.\\n" "${TEMP_DIR}" "${TEMP_DIR}"
+			printf "Exiting now.\\n\\n"
 			exit 1;
 		fi
-		printf "\\tMongo C++ driver installed at /usr/local/lib/libmongocxx-static.a.\\n"
+		printf "Mongo C++ driver installed at /usr/local/lib/libmongocxx-static.a.\\n"
 	else
-		printf "\\tMongo C++ driver found at /usr/local/lib/libmongocxx-static.a.\\n"
+		printf "Mongo C++ driver found at /usr/local/lib/libmongocxx-static.a.\\n"
 	fi
 
-	printf "\\n\\tChecking LLVM with WASM support.\\n"
+	printf "\\nChecking LLVM with WASM support.\\n"
 	if [ ! -d /usr/local/wasm/bin ]; then
 		if ! cd "${TEMP_DIR}"
 		then
-			printf "\\tUnable to enter directory %s.\\n" "${TEMP_DIR}"
-			printf "\\tExiting now.\\n\\n"
+			printf "Unable to enter directory %s.\\n" "${TEMP_DIR}"
+			printf "Exiting now.\\n\\n"
 			exit 1;
 		fi
 		if ! mkdir "${TEMP_DIR}/wasm-compiler"
 		then
-			printf "\\tUnable to create directory %s/wasm-compiler.\\n" "${TEMP_DIR}"
-			printf "\\tExiting now.\\n\\n"
+			printf "Unable to create directory %s/wasm-compiler.\\n" "${TEMP_DIR}"
+			printf "Exiting now.\\n\\n"
 			exit 1;
 		fi
 		if ! cd "${TEMP_DIR}/wasm-compiler"
 		then
-			printf "\\tUnable to enter directory %s/wasm-compiler.\\n" "${TEMP_DIR}"
-			printf "\\tExiting now.\\n\\n"
+			printf "Unable to enter directory %s/wasm-compiler.\\n" "${TEMP_DIR}"
+			printf "Exiting now.\\n\\n"
 			exit 1;
 		fi
 		if ! git clone --depth 1 --single-branch --branch release_40 https://github.com/llvm-mirror/llvm.git
 		then
-			printf "\\tUnable to clone llvm repo @ https://github.com/llvm-mirror/llvm.git.\\n"
-			printf "\\tExiting now.\\n\\n"
+			printf "Unable to clone llvm repo @ https://github.com/llvm-mirror/llvm.git.\\n"
+			printf "Exiting now.\\n\\n"
 			exit 1;
 		fi
 		if ! cd "${TEMP_DIR}/wasm-compiler/llvm/tools"
 		then
-			printf "\\tUnable to enter directory %s/wasm-compiler/llvm/tools.\\n" "${TEMP_DIR}"
-			printf "\\tExiting now.\\n\\n"
+			printf "Unable to enter directory %s/wasm-compiler/llvm/tools.\\n" "${TEMP_DIR}"
+			printf "Exiting now.\\n\\n"
 			exit 1;
 		fi
 		if ! git clone --depth 1 --single-branch --branch release_40 https://github.com/llvm-mirror/clang.git
 		then
-			printf "\\tUnable to clone clang repo @ https://github.com/llvm-mirror/clang.git.\\n"
-			printf "\\tExiting now.\\n\\n"
+			printf "Unable to clone clang repo @ https://github.com/llvm-mirror/clang.git.\\n"
+			printf "Exiting now.\\n\\n"
 			exit 1;
 		fi
 		if ! cd "${TEMP_DIR}/wasm-compiler/llvm"
 		then
-			printf "\\tUnable to enter directory %s/wasm-compiler/llvm.\\n" "${TEMP_DIR}"
-			printf "\\tExiting now.\\n\\n"
+			printf "Unable to enter directory %s/wasm-compiler/llvm.\\n" "${TEMP_DIR}"
+			printf "Exiting now.\\n\\n"
 			exit 1;
 		fi
 		if ! mkdir "${TEMP_DIR}/wasm-compiler/llvm/build"
 		then
-			printf "\\tUnable to create directory %s/wasm-compiler/llvm/build.\\n" "${TEMP_DIR}"
-			printf "\\tExiting now.\\n\\n"
+			printf "Unable to create directory %s/wasm-compiler/llvm/build.\\n" "${TEMP_DIR}"
+			printf "Exiting now.\\n\\n"
 			exit 1;
 		fi
 		if ! cd "${TEMP_DIR}/wasm-compiler/llvm/build"
 		then
-			printf "\\tUnable to enter directory %s/wasm-compiler/llvm/build.\\n" "${TEMP_DIR}"
-			printf "\\tExiting now.\\n\\n"
+			printf "Unable to enter directory %s/wasm-compiler/llvm/build.\\n" "${TEMP_DIR}"
+			printf "Exiting now.\\n\\n"
 			exit 1;
 		fi
 		if ! cmake -G "Unix Makefiles" -DCMAKE_INSTALL_PREFIX=/usr/local/wasm \
 		-DLLVM_TARGETS_TO_BUILD= -DLLVM_EXPERIMENTAL_TARGETS_TO_BUILD=WebAssembly \
 		-DCMAKE_BUILD_TYPE=Release ../
 		then
-			printf "\\tError compiling LLVM/Clang with WASM support.\\n"
-			printf "\\tExiting now.\\n\\n"
+			printf "Error compiling LLVM/Clang with WASM support.\\n"
+			printf "Exiting now.\\n\\n"
 			exit 1;
 		fi
 		if ! sudo make -j"${CPU_CORE}" install
 		then
-			printf "\\tCompiling LLVM/Clang with WASM support has exited with the error above.\\n"
-			printf "\\tExiting now.\\n\\n"
+			printf "Compiling LLVM/Clang with WASM support has exited with the error above.\\n"
+			printf "Exiting now.\\n\\n"
 			exit 1;
 		fi
 		if ! sudo rm -rf "${TEMP_DIR}/wasm-compiler"
 		then
-			printf "\\tUnable to remove directory %s/wasm-compiler.\\n" "${TEMP_DIR}"
-			printf "\\tExiting now.\\n\\n"
+			printf "Unable to remove directory %s/wasm-compiler.\\n" "${TEMP_DIR}"
+			printf "Exiting now.\\n\\n"
 			exit 1;
 		fi
-		printf "\\tSuccessfully installed LLVM/Clang with WASM support @ /usr/local/wasm/bin/.\\n"
+		printf "Successfully installed LLVM/Clang with WASM support @ /usr/local/wasm/bin/.\\n"
 	else
-		printf "\\tWASM found at /usr/local/wasm/bin/.\\n"
+		printf "WASM found at /usr/local/wasm/bin/.\\n"
 	fi
 
 	function print_instructions()
 	{
-		printf "\\n\\t%s -f %s &\\n" "$( command -v mongod )" "${MONGODB_CONF}"
-		printf "\\tcd %s; make test\\n\\n" "${BUILD_DIR}"
+		printf "\\n%s -f %s &\\n" "$( command -v mongod )" "${MONGODB_CONF}"
+		printf "cd %s; make test\\n\\n" "${BUILD_DIR}"
 	return 0
 	}
