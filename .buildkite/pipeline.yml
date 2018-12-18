@@ -26,7 +26,7 @@ steps:
         echo 1 | ./eosio_build.sh && \
         echo "--- :compression: Compressing build directory" && \
         tar -pczf build.tar.gz build/
-    label: ":centos: Build"
+    label: ":centos: 7 Build"
     agents:
       queue: "automation-large-builder-fleet"
     artifact_paths: "build.tar.gz"
