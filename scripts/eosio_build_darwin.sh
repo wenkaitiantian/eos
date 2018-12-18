@@ -189,7 +189,10 @@
 	fi
 
 
-	printf "\\nChecking Boost library (${BOOST_VERSION}) installation...\\n"
+	printf "\\n"
+
+
+	printf "Checking Boost library (${BOOST_VERSION}) installation...\\n"
     if [ ! -d ${SRC_LOCATION}/boost_${BOOST_VERSION} ]; then
 		printf "Installing Boost library...\\n"
 		curl -LO https://dl.bintray.com/boostorg/release/${BOOST_VERSION_MAJOR}.${BOOST_VERSION_MINOR}.${BOOST_VERSION_PATCH}/source/boost_${BOOST_VERSION}.tar.bz2 \
@@ -201,13 +204,13 @@
 		&& rm -f boost_${BOOST_VERSION}.tar.bz2 \
 		&& rm -rf $HOME/opt/boost \
 		&& ln -s /usr/local/src/boost_${BOOST_VERSION} $HOME/opt/boost
-		printf "Boost library successfully installed @ %s.\\n\\n"
+		printf " - Boost library successfully installed @ %s.\\n\\n"
 	else
-		printf "Boost library found with correct version.\\n"
+		printf " - Boost library found with correct version.\\n"
 	fi
 
 
-	printf "\\nChecking MongoDB installation...\\n"
+	printf "Checking MongoDB installation...\\n"
 	# eosio_build.sh sets PATH with /opt/mongodb/bin
     if [ ! -e "${MONGODB_CONF}" ]; then
 		printf "Installing MongoDB...\\n"
@@ -275,7 +278,7 @@
 		&& cd ../.. \
 		&& rm -f /usr/local/wasm \
 		&& ln -s /usr/local/src/llvm-$LLVM_CLANG_VERSION /usr/local/wasm
-		printf "WASM compiler successfully installed at ${SRC_LOCATION}/llvm-${LLVM_CLANG_VERSION} (Symlinked to ${HOME}/opt/wasm)\\n"
+		printf " - WASM compiler successfully installed at ${SRC_LOCATION}/llvm-${LLVM_CLANG_VERSION} (Symlinked to ${HOME}/opt/wasm)\\n"
 	else
 		printf " - WASM found at ${SRC_LOCATION}/llvm-${LLVM_CLANG_VERSION}\\n"
 	fi

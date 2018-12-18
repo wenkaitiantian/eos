@@ -113,10 +113,12 @@
 	else
 		printf " - No required YUM dependencies to install.\\n"
 	fi
-		printf "\\n"
+	
+	
+	printf "\\n"
 
 
-	printf "\\nChecking CMAKE installation...\\n"
+	printf "Checking CMAKE installation...\\n"
     if [ -z "$(command -v cmake 2>/dev/null)" ]; then
 		printf "Installing CMAKE...\\n"
 		curl -LO https://cmake.org/files/v${CMAKE_VERSION_MAJOR}.${CMAKE_VERSION_MINOR}/cmake-${CMAKE_VERSION}.tar.gz \
@@ -127,16 +129,16 @@
     	&& make install \
     	&& cd .. \
     	&& rm -f cmake-${CMAKE_VERSION}.tar.gz
-		printf "CMAKE successfully installed @ %s.\\n\\n"
+		printf " - CMAKE successfully installed @ %s.\\n\\n"
 	else
-		printf "CMAKE found @ $(command -v cmake 2>/dev/null).\\n"
+		printf " - CMAKE found @ $(command -v cmake 2>/dev/null).\\n"
 	fi
 
 
 	printf "\\n"
 
 
-	printf "\\nChecking Boost library (${BOOST_VERSION}) installation...\\n"
+	printf "Checking Boost library (${BOOST_VERSION}) installation...\\n"
     if [ ! -d ${SRC_LOCATION}/boost_${BOOST_VERSION} ]; then
 		printf "Installing Boost library...\\n"
 		curl -LO https://dl.bintray.com/boostorg/release/${BOOST_VERSION_MAJOR}.${BOOST_VERSION_MINOR}.${BOOST_VERSION_PATCH}/source/boost_${BOOST_VERSION}.tar.bz2 \
@@ -148,16 +150,16 @@
 		&& rm -f boost_${BOOST_VERSION}.tar.bz2 \
 		&& rm -rf $HOME/opt/boost \
 		&& ln -s /usr/local/src/boost_${BOOST_VERSION} $HOME/opt/boost
-		printf "Boost library successfully installed @ %s.\\n\\n"
+		printf " - Boost library successfully installed @ %s.\\n\\n"
 	else
-		printf "Boost library found with correct version.\\n"
+		printf " - Boost library found with correct version.\\n"
 	fi
 
 
 	printf "\\n"
 
 
-	printf "\\nChecking MongoDB installation...\\n"
+	printf "Checking MongoDB installation...\\n"
 	# eosio_build.sh sets PATH with /opt/mongodb/bin
     if [ ! -e "${MONGODB_CONF}" ]; then
 		printf "Installing MongoDB...\\n"
@@ -225,7 +227,7 @@
 		&& cd ../.. \
 		&& rm -f $HOME/opt/wasm \
 		&& ln -s /usr/local/src/llvm-$LLVM_CLANG_VERSION $HOME/opt/wasm
-		printf "WASM compiler successfully installed at ${SRC_LOCATION}/llvm-${LLVM_CLANG_VERSION} (Symlinked to ${HOME}/opt/wasm)\\n"
+		printf " - WASM compiler successfully installed at ${SRC_LOCATION}/llvm-${LLVM_CLANG_VERSION} (Symlinked to ${HOME}/opt/wasm)\\n"
 	else
 		printf " - WASM found at ${SRC_LOCATION}/llvm-${LLVM_CLANG_VERSION}\\n"
 	fi
