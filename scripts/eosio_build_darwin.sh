@@ -199,7 +199,7 @@
 		&& tar -xf boost_${BOOST_VERSION}.tar.bz2 \
 		&& cd boost_${BOOST_VERSION}/ \
 		&& ./bootstrap.sh "--prefix=${SRC_LOCATION}/boost_${BOOST_VERSION}" \
-		&& ./b2 -q -j$( nproc ) install \
+		&& ./b2 -q -j$(sysctl -in machdep.cpu.core_count) install \
 		&& cd .. \
 		&& rm -f boost_${BOOST_VERSION}.tar.bz2 \
 		&& rm -rf $HOME/opt/boost \
@@ -237,7 +237,7 @@
 		&& mkdir -p cmake-build \
 		&& cd cmake-build \
 		&& cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr/local -DENABLE_BSON=ON -DENABLE_SSL=DARWIN -DENABLE_AUTOMATIC_INIT_AND_CLEANUP=OFF -DENABLE_STATIC=ON .. \
-		&& make -j$(nproc) \
+		&& make -j$(sysctl -in machdep.cpu.core_count) \
 		&& make install \
 		&& cd ../.. \
 		&& rm mongo-c-driver-${MONGO_C_DRIVER_VERSION}.tar.gz
@@ -251,7 +251,7 @@
 		git clone https://github.com/mongodb/mongo-cxx-driver.git --branch releases/v${MONGO_CXX_DRIVER_VERSION} --depth 1 mongo-cxx-driver-${MONGO_CXX_DRIVER_VERSION} \
 		&& cd mongo-cxx-driver-${MONGO_CXX_DRIVER_VERSION}/build \
 		&& cmake -DBUILD_SHARED_LIBS=OFF -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr/local .. \
-		&& make -j$(nproc) VERBOSE=1 \
+		&& make -j$(sysctl -in machdep.cpu.core_count) VERBOSE=1 \
 		&& make install \
 		&& cd ../..
 		printf " - MongoDB C++ driver successfully installed @ %s.\\n"
