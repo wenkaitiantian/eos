@@ -16,6 +16,9 @@
 	# Enter working directory
 	cd $SRC_LOCATION
 
+	# Legacy path support (ln -s for boost/wasm) | TODO: Remove reliance on $HOME/opt for /opt
+	mkdir -p $HOME/opt
+
 	printf "\\nOS name: %s\\n" "${OS_NAME}"
 	printf "OS Version: %s\\n" "${OS_VER}"
 	printf "CPU speed: %sMhz\\n" "${CPU_SPEED}"
@@ -173,7 +176,7 @@
 	else
 		printf " - No required YUM dependencies to install.\\n"
 	fi
-	printf "\\n"
+		printf "\\n"
 
 
 	printf "\\nChecking CMAKE installation...\\n"
@@ -193,6 +196,9 @@
 	fi
 
 
+	printf "\\n"
+
+
 	printf "\\nChecking Boost library (${BOOST_VERSION}) installation...\\n"
     if [ ! -d ${SRC_LOCATION}/boost_${BOOST_VERSION} ]; then
 		printf "Installing Boost library...\\n"
@@ -203,7 +209,7 @@
 		&& ./b2 -q -j$( nproc ) install \
 		&& cd .. \
 		&& rm -f boost_${BOOST_VERSION}.tar.bz2 \
-		&& rm -f $HOME/opt/boost \
+		&& rm -rf $HOME/opt/boost \
 		&& ln -s /usr/local/src/boost_${BOOST_VERSION} $HOME/opt/boost
 		printf "Boost library successfully installed @ %s.\\n\\n"
 	else
@@ -232,8 +238,6 @@
 	else
 		printf " - MongoDB found with correct version."
 	fi
-
-	
 	printf "Checking MongoDB C driver installation...\\n"
 	if [ ! -e "${SRC_LOCATION}/mongo-c-driver-${MONGO_C_DRIVER_VERSION}" ]; then
 		printf "Installing MongoDB C driver...\\n"
@@ -265,7 +269,9 @@
 		printf " - MongoDB C++ driver found with correct version.\\n"
 	fi
 
+
 	printf "\\n"
+
 
 	printf "Checking LLVM with WASM support...\\n"
 	if [ ! -d "${SRC_LOCATION}/llvm-${LLVM_CLANG_VERSION}" ]; then
@@ -287,8 +293,8 @@
 		printf " - WASM found at ${SRC_LOCATION}/llvm-${LLVM_CLANG_VERSION}\\n"
 	fi
 
-	cd ..
 
+	cd ..
 	printf "\\n"
 
 	function print_instructions()
