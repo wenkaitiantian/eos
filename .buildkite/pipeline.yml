@@ -1,11 +1,32 @@
 steps:
 
+  # - command: |
+  #       echo "+++ :hammer: Building" && \
+  #       echo 1 | ./eosio_build.sh && \
+  #       echo "--- :compression: Compressing build directory" && \
+  #       tar -pczf build.tar.gz build/
+  #   label: ":ubuntu: 16.04 Build"
+  #   agents:
+  #     queue: "automation-large-builder-fleet"
+  #   artifact_paths: "build.tar.gz"
+  #   plugins:
+  #     ecr#v1.1.4:
+  #       login: true
+  #       account_ids: "436617320021"
+  #       no-include-email: true
+  #       region: "us-west-2"
+  #     docker#v2.1.0:
+  #       debug: true
+  #       image: "436617320021.dkr.ecr.us-west-2.amazonaws.com/ci:ubuntu16"
+  #       workdir: /data/job
+  #   timeout: 60
+
   - command: |
         echo "+++ :hammer: Building" && \
         echo 1 | ./eosio_build.sh && \
         echo "--- :compression: Compressing build directory" && \
         tar -pczf build.tar.gz build/
-    label: ":ubuntu: 16.04 Build"
+    label: ":ubuntu: 18.04 Build"
     agents:
       queue: "automation-large-builder-fleet"
     artifact_paths: "build.tar.gz"
@@ -17,7 +38,7 @@ steps:
         region: "us-west-2"
       docker#v2.1.0:
         debug: true
-        image: "436617320021.dkr.ecr.us-west-2.amazonaws.com/ci:ubuntu16"
+        image: "436617320021.dkr.ecr.us-west-2.amazonaws.com/ci:ubuntu18"
         workdir: /data/job
     timeout: 60
 
