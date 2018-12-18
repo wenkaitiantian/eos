@@ -171,14 +171,6 @@
 						printf "Exiting now.\\n\\n"
 						exit 1;
 					fi
-                    if [[ "$DEP" == "llvm@4" ]]; then
-                    	"${BREW}" unlink ${DEP}
-					elif ! "${BREW}" unlink ${DEP} && "${BREW}" link --force ${DEP}
-					then
-						printf "Homebrew exited with the above errors.\\n"
-						printf "Exiting now.\\n\\n"
-						exit 1;
-					fi
 				break;;
 				[Nn]* ) echo "User aborting installation of required dependencies, Exiting now."; exit;;
 				* ) echo "Please type 1 for yes or 2 for no.";;
@@ -214,13 +206,14 @@
 	# eosio_build.sh sets PATH with /opt/mongodb/bin
     if [ ! -e "${MONGODB_CONF}" ]; then
 		printf "Installing MongoDB...\\n"
-		curl -OL https://fastdl.mongodb.org/linux/mongodb-linux-x86_64-amazon-${MONGODB_VERSION}.tgz \
-		&& tar -xzvf mongodb-linux-x86_64-amazon-${MONGODB_VERSION}.tgz \
-		&& mv ${SRC_LOCATION}/mongodb-linux-x86_64-amazon-${MONGODB_VERSION} /opt/mongodb \
+		mkdir -p /opt \
+		&& curl -OL https://fastdl.mongodb.org/osx/mongodb-osx-ssl-x86_64-${MONGODB_VERSION}.tgz \
+		&& tar -xzvf mongodb-osx-ssl-x86_64-${MONGODB_VERSION}.tgz \
+		&& mv ${SRC_LOCATION}/mongodb-osx-ssl-x86_64-${MONGODB_VERSION} /opt/mongodb \
 		&& mkdir /opt/mongodb/data \
 		&& mkdir /opt/mongodb/log \
 		&& touch /opt/mongodb/log/mongod.log \
-		&& rm -f mongodb-linux-x86_64-amazon-${MONGODB_VERSION}.tgz \
+		&& rm -f mongodb-osx-ssl-x86_64-${MONGODB_VERSION}.tgz \
 		&& mv ${SOURCE_DIR}/scripts/mongod.conf /opt/mongodb/mongod.conf \
 		&& mkdir -p /data/db \
 		&& mkdir -p /var/log/mongodb
