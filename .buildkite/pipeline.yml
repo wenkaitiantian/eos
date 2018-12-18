@@ -5,6 +5,27 @@ steps:
         echo 1 | ./eosio_build.sh && \
         echo "--- :compression: Compressing build directory" && \
         tar -pczf build.tar.gz build/
+    label: ":ubuntu: 16.04 Build"
+    agents:
+      queue: "automation-large-builder-fleet"
+    artifact_paths: "build.tar.gz"
+    plugins:
+      ecr#v1.1.4:
+        login: true
+        account_ids: "436617320021"
+        no-include-email: true
+        region: "us-west-2"
+      docker#v2.1.0:
+        debug: true
+        image: "436617320021.dkr.ecr.us-west-2.amazonaws.com/ci:ubuntu16"
+        workdir: /data/job
+    timeout: 60
+
+  - command: |
+        echo "+++ :hammer: Building" && \
+        echo 1 | ./eosio_build.sh && \
+        echo "--- :compression: Compressing build directory" && \
+        tar -pczf build.tar.gz build/
     label: ":centos: Build"
     agents:
       queue: "automation-large-builder-fleet"
@@ -47,21 +68,6 @@ steps:
   #     - "role=builder"
   #     - "os=mojave"
   #   artifact_paths: "build.tar.gz"
-  #   timeout: 60
-
-  # - command: |
-  #       echo "+++ :hammer: Building" && \
-  #       echo 1 | ./eosio_build.sh && \
-  #       echo "--- :compression: Compressing build directory" && \
-  #       tar -pczf build.tar.gz build/
-  #   label: ":ubuntu: Build"
-  #   agents:
-  #     queue: "automation-large-builder-fleet"
-  #   artifact_paths: "build.tar.gz"
-  #   plugins:
-  #     docker#v1.4.0:
-  #       image: "eosio/ci:ubuntu"
-  #       workdir: /data/job
   #   timeout: 60
     
   # - command: |

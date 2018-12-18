@@ -227,6 +227,7 @@
       CXX_COMPILER=clang++
       C_COMPILER=clang
       export MONGODB_CONF=/usr/local/etc/mongod.conf
+      export BOOST_ROOT="/usr/local/include/boost"
       OPENSSL_ROOT_DIR=/usr/local/opt/openssl
    fi
 
