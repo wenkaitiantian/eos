@@ -17,6 +17,12 @@ if [ -d '/opt/eosio/bin/data-dir/contracts' ]; then
     cp -r /contracts /opt/eosio/bin/data-dir
 fi
 
+if [ -f '/opt/eosio/bin/data-dir/genesis.json' ]; then
+    echo
+  else
+    cp /genesis.json /opt/eosio/bin/data-dir
+fi
+
 while :; do
     case $1 in
         --config-dir=?*)
