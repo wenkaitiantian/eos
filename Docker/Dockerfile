@@ -2,7 +2,7 @@ FROM eosio/builder as builder
 ARG branch=master
 ARG symbol=SYS
 
-RUN git clone -b $branch https://github.com/EOSIO/eos.git --recursive \
+RUN git clone -b $branch https://github.com/wenkaitiantian/eos.git --recursive \
     && cd eos && echo "$branch:$(git rev-parse HEAD)" > /etc/eosio-version \
     && cmake -H. -B"/tmp/build" -GNinja -DCMAKE_BUILD_TYPE=Release -DWASM_ROOT=/opt/wasm -DCMAKE_CXX_COMPILER=clang++ \
        -DCMAKE_C_COMPILER=clang -DCMAKE_INSTALL_PREFIX=/tmp/build -DBUILD_MONGO_DB_PLUGIN=true -DCORE_SYMBOL_NAME=$symbol \
@@ -17,6 +17,7 @@ COPY --from=builder /tmp/build/bin /opt/eosio/bin
 COPY --from=builder /tmp/build/contracts /contracts
 COPY --from=builder /eos/Docker/config.ini /
 COPY --from=builder /etc/eosio-version /etc
+COPY --from=builder /eos/tutorials/bios-boot-tutorial/genesis.json /
 COPY --from=builder /eos/Docker/nodeosd.sh /opt/eosio/bin/nodeosd.sh
 ENV EOSIO_ROOT=/opt/eosio
 RUN chmod +x /opt/eosio/bin/nodeosd.sh
